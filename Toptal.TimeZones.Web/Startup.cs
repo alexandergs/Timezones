@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Toptal.Timezones.AccountManagement;
 using Toptal.Timezones.Entities;
 using Toptal.Timezones.Entities.Identity;
 using Toptal.TimeZones.Services;
@@ -60,6 +61,8 @@ namespace Toptal.TimeZones.Web
             })
             .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
+            services.AddTransient<IAccountManager, AccountManager>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,6 +88,13 @@ namespace Toptal.TimeZones.Web
                     defaults: new { controller = "Home", Action = "Index" }
                     );
             });
+
+            // Seed the database
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var accountManager = scope.ServiceProvider.GetService<IAccountManager>();
+                accountManager.CreateAccountDefaults().Wait();
+            }
         }
     }
 }

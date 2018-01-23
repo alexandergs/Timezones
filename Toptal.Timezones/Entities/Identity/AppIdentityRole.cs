@@ -5,8 +5,13 @@ using System.Text;
 
 namespace Toptal.Timezones.Entities.Identity
 {
-    public class AppIdentityRole: IdentityRole
+    public class AppIdentityRole : IdentityRole
     {
+        public AppIdentityRole()
+        { }
 
+        public AppIdentityRole(string roleName) : base(roleName)
+        {
+        }
     }
 }
