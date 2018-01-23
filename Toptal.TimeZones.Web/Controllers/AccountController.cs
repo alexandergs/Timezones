@@ -21,6 +21,8 @@ namespace Toptal.TimeZones.Web.Controllers
         private readonly IConfiguration _config;
         private readonly IEmailSender _emailSender;
 
+
+
         public AccountController(ILogger<AccountController> logger,
           SignInManager<AppIdentityUser> signInManager,
           UserManager<AppIdentityUser> userManager,
