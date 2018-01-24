@@ -8,6 +8,7 @@ import * as _ from "lodash";
     templateUrl: "userManagement.component.html",
     styleUrls: ["userManagement.component.css"]
 })
+
 export class UserManagement implements OnInit{
 
     title = "User Management";
@@ -20,6 +21,10 @@ export class UserManagement implements OnInit{
         this.allUsers = this.data.allUsers;
     }
 
+    removeUserFromList(email: string) {
+        this.allUsers = this.allUsers.filter(item => item.email !== email);
+    }
+
     onChangeRoleSelect($event, userInfo) {
         this.data.updateUserRole(userInfo)
             .subscribe(() => {
@@ -30,6 +35,16 @@ export class UserManagement implements OnInit{
         return true;
     }
 
+    onDelete($event, userInfo) {
+        this.data.deleteUser(userInfo)
+            .subscribe(() => {
+                this.removeUserFromList(userInfo.email);
+                this.errorMessage = "";
+                this.successMessage = "User deleted.";
+            },
+            err => this.errorMessage = "Failed to delete user.");
+        return true;
+    }
     ngOnInit() {
         this.data.loadAllUsersInfo()
             .subscribe(() =>

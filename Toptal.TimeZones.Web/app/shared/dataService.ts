@@ -24,11 +24,19 @@ export class DataService {
     }
 
     public updateUserRole(userInfo: UserInfoViewModel) {
-        return this.http.put("/account/updateUserRole?id="+userInfo.email,userInfo,
+        return this.http.put("/account/updateUserRole?id=" + userInfo.email, userInfo,
             {
                 headers: new Headers({ "Authorization": "Bearer " + this.token })
             }
-            );
+        );
+    }
+
+    public deleteUser(userInfo: UserInfoViewModel) {
+        return this.http.delete("/account/deleteUser/" + userInfo.email,
+            {
+                headers: new Headers({ "Authorization": "Bearer " + this.token })
+            }
+        );
     }
 
     //public get loginRequired(): boolean {

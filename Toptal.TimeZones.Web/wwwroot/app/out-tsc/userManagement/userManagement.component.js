@@ -28,6 +28,15 @@ var UserManagement = /** @class */ (function () {
         }, function (err) { return _this.errorMessage = "Failed to update user's role."; });
         return true;
     };
+    UserManagement.prototype.onDelete = function ($event, userInfo) {
+        var _this = this;
+        this.data.deleteUser(userInfo)
+            .subscribe(function () {
+            _this.errorMessage = "";
+            _this.successMessage = "User deleted.";
+        }, function (err) { return _this.errorMessage = "Failed to delete user."; });
+        return true;
+    };
     UserManagement.prototype.ngOnInit = function () {
         var _this = this;
         this.data.loadAllUsersInfo()

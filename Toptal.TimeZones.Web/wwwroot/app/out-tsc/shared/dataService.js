@@ -29,6 +29,11 @@ var DataService = /** @class */ (function () {
             headers: new http_1.Headers({ "Authorization": "Bearer " + this.token })
         });
     };
+    DataService.prototype.deleteUser = function (userInfo) {
+        return this.http.delete("/account/deleteUser/" + userInfo.email, {
+            headers: new http_1.Headers({ "Authorization": "Bearer " + this.token })
+        });
+    };
     DataService = __decorate([
         core_1.Injectable(),
         __metadata("design:paramtypes", [http_1.Http])

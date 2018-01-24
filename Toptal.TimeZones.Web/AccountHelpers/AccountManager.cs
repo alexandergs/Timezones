@@ -21,7 +21,6 @@ namespace Toptal.Timezones.Web.AccountHelpers
         const string DEFAULT_ADMIN_EMAIL_KEY = "AccountDefaults:DefaultAdmin:Email";
         const string DEFAULT_ADMIN_PASSWORD_KEY = "AccountDefaults:DefaultAdmin:Password";
         const string DEFAULT_ROLES_KEY = "AccountDefaults:Roles";
-        const string DEFAULT_ADMIN_ROLE_NAME = "Admin";
 
 
 
@@ -80,13 +79,13 @@ namespace Toptal.Timezones.Web.AccountHelpers
                     if (createPowerUser.Succeeded)
                     {
                         //here we tie the new user to the role
-                        await _userManager.AddToRoleAsync(powerUser, DEFAULT_ADMIN_ROLE_NAME);
+                        await _userManager.AddToRoleAsync(powerUser, RoleNames.Admin);
 
                     }
                 }
                 else
                 {
-                    await _userManager.AddToRoleAsync(_user, DEFAULT_ADMIN_ROLE_NAME);
+                    await _userManager.AddToRoleAsync(_user, RoleNames.Admin);
                 }
             }
             catch (Exception exception)

@@ -17,6 +17,7 @@ using Toptal.Timezones.Web.Session;
 using Toptal.Timezones.Web.Models;
 using Toptal.TimeZones.Services;
 using Toptal.Timezones.Web.Models;
+using Toptal.Timezones.Web.AccountHelpers;
 
 namespace Toptal.TimeZones.Web.Controllers
 {
@@ -220,7 +221,7 @@ namespace Toptal.TimeZones.Web.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles ="Admin")]
+        [Authorize(Roles = RoleNames.Admin)]
         [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -250,7 +251,7 @@ namespace Toptal.TimeZones.Web.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = RoleNames.Admin)]
         public async Task<IActionResult> UpdateUserRole(string id, [FromBody]AppUserInfoViewModel userInfo)
         {
             try
@@ -276,6 +277,34 @@ namespace Toptal.TimeZones.Web.Controllers
             }
 
             return BadRequest("Failed to save user role");
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = RoleNames.Admin)]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var currentUser = await _userManager.FindByNameAsync(id);
+                    var result = await _userManager.DeleteAsync(currentUser);
+                    if(result.Succeeded)
+                    {
+                        return Ok(id);
+                    }
+                }
+                else
+                {
+                    return BadRequest(ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to delete user: {ex}");
+            }
+
+            return BadRequest("Failed to delete user");
         }
     }
 }

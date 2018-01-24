@@ -323,6 +323,11 @@ var DataService = (function () {
             headers: new http_1.Headers({ "Authorization": "Bearer " + this.token })
         });
     };
+    DataService.prototype.deleteUser = function (userInfo) {
+        return this.http.delete("/account/deleteUser/" + userInfo.email, {
+            headers: new http_1.Headers({ "Authorization": "Bearer " + this.token })
+        });
+    };
     return DataService;
 }());
 DataService = __decorate([
@@ -356,7 +361,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../app/userManagement/userManagement.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"row\">\r\n    <h3>\r\n        {{title}}\r\n    </h3>\r\n    <div class=\"container\">\r\n        <div class=\"col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3  col-sm-8 col-sm-offset-2 col-xs-12\">\r\n            <div *ngIf=\"errorMessage\" class=\"alert alert-warning\">{{ errorMessage }}</div>\r\n            <div *ngIf=\"successMessage\" class=\"alert alert-success\">{{ successMessage }}</div>\r\n            <table class=\"table table-bordered table-hover\">\r\n                <thead>\r\n                    <tr>\r\n                        <th>User</th>\r\n                        <th>Role</th>\r\n                        <th></th>\r\n                    </tr>\r\n                </thead>\r\n                <tbody>\r\n                    <tr *ngFor=\"let userInfo of allUsers\">\r\n                        <td>{{ userInfo.email }}</td>\r\n                        <td>\r\n                            <select [(ngModel)]=\"userInfo.role\" (change)=\"onChangeRoleSelect($event, userInfo)\">\r\n                                <option value=\"\" [selected]=\"userInfo.role == ''\">Member</option>\r\n                                <option value=\"Admin\" [selected]=\"userInfo.role == 'Admin'\">Admin</option>\r\n                                <option value=\"Manager\" [selected]=\"userInfo.role == 'Manager'\">Manager</option>\r\n                            </select>\r\n                        </td>\r\n                        <td>\r\n                            <button>Delete</button>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        </div>\r\n    </div>\r\n</div>"
+module.exports = "<div class=\"row\">\r\n    <h3>\r\n        {{title}}\r\n    </h3>\r\n    <div class=\"container\">\r\n        <div class=\"col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3  col-sm-8 col-sm-offset-2 col-xs-12\">\r\n            <div *ngIf=\"errorMessage\" class=\"alert alert-warning\">{{ errorMessage }}</div>\r\n            <div *ngIf=\"successMessage\" class=\"alert alert-success\">{{ successMessage }}</div>\r\n            <table class=\"table table-bordered table-hover\">\r\n                <thead class=\"thead thead-inverse\">\r\n                    <tr>\r\n                        <th>User</th>\r\n                        <th>Role</th>\r\n                        <th></th>\r\n                    </tr>\r\n                </thead>\r\n                <tbody>\r\n                    <tr *ngFor=\"let userInfo of allUsers\">\r\n                        <td>{{ userInfo.email }}</td>\r\n                        <td>\r\n                            <select [(ngModel)]=\"userInfo.role\" (change)=\"onChangeRoleSelect($event, userInfo)\">\r\n                                <option value=\"\" [selected]=\"userInfo.role == ''\">Member</option>\r\n                                <option value=\"Admin\" [selected]=\"userInfo.role == 'Admin'\">Admin</option>\r\n                                <option value=\"Manager\" [selected]=\"userInfo.role == 'Manager'\">Manager</option>\r\n                            </select>\r\n                        </td>\r\n                        <td>\r\n                            <button class=\"btn btn-danger\" (click)=\"onDelete($event, userInfo)\">Delete</button>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        </div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
@@ -385,6 +390,9 @@ var UserManagement = (function () {
         this.successMessage = "";
         this.allUsers = this.data.allUsers;
     }
+    UserManagement.prototype.removeUserFromList = function (email) {
+        this.allUsers = this.allUsers.filter(function (item) { return item.email !== email; });
+    };
     UserManagement.prototype.onChangeRoleSelect = function ($event, userInfo) {
         var _this = this;
         this.data.updateUserRole(userInfo)
@@ -392,6 +400,16 @@ var UserManagement = (function () {
             _this.errorMessage = "";
             _this.successMessage = "Role updated.";
         }, function (err) { return _this.errorMessage = "Failed to update user's role."; });
+        return true;
+    };
+    UserManagement.prototype.onDelete = function ($event, userInfo) {
+        var _this = this;
+        this.data.deleteUser(userInfo)
+            .subscribe(function () {
+            _this.removeUserFromList(userInfo.email);
+            _this.errorMessage = "";
+            _this.successMessage = "User deleted.";
+        }, function (err) { return _this.errorMessage = "Failed to delete user."; });
         return true;
     };
     UserManagement.prototype.ngOnInit = function () {
