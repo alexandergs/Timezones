@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Toptal.Timezones.Api.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles="Admin")]
+    [Authorize(Roles = "Admin")]
     public class UserManagementController : Controller
     {
         // GET api/users

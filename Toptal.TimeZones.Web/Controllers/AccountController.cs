@@ -190,13 +190,16 @@ namespace Toptal.TimeZones.Web.Controllers
 
                 if (result.Succeeded)
                 {
+                    var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
                     // Create the token
                     var claims = new[]
                     {
                           new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                           new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                          new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
-                        };
+                          new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
+                          new Claim(JwtRegisteredClaimNames.NameId, user.UserName),
+                          new Claim("roles", role)
+                };
 
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
                     var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -261,7 +264,7 @@ namespace Toptal.TimeZones.Web.Controllers
                     var currentUser = await _userManager.FindByNameAsync(userInfo.Email);
                     var roles = await _userManager.GetRolesAsync(currentUser);
                     await _userManager.RemoveFromRolesAsync(currentUser, roles.ToArray());
-                    if(!String.IsNullOrWhiteSpace(userInfo.Role))
+                    if (!String.IsNullOrWhiteSpace(userInfo.Role))
                         await _userManager.AddToRoleAsync(currentUser, userInfo.Role);
 
                     return Ok(userInfo);
@@ -289,7 +292,7 @@ namespace Toptal.TimeZones.Web.Controllers
                 {
                     var currentUser = await _userManager.FindByNameAsync(id);
                     var result = await _userManager.DeleteAsync(currentUser);
-                    if(result.Succeeded)
+                    if (result.Succeeded)
                     {
                         return Ok(id);
                     }

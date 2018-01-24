@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using Toptal.Timezones.Entities;
 
 namespace Toptal.Timezones.Api
 {
@@ -25,31 +30,44 @@ namespace Toptal.Timezones.Api
             _env = env;
         }
 
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication()
-            .AddJwtBearer(cfg =>
+            services.AddDbContext<TimezonesContext>(cfg =>
             {
-                cfg.TokenValidationParameters = new TokenValidationParameters()
+                cfg.UseSqlServer(_config.GetConnectionString("TimeZonesDB"));
+            });
+
+            services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(o =>
+            {
+                o.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidIssuer = _config["Tokens:Issuer"],
                     ValidAudience = _config["Tokens:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"])),
+                    RoleClaimType = ClaimTypes.Role
                 };
-
             });
 
-            //services.AddDbContext<DutchContext>(cfg =>
+            //services.AddAuthentication()
+            //.AddCookie()
+            //.AddJwtBearer(cfg =>
             //{
-            //    cfg.UseSqlServer(_config.GetConnectionString("DutchConnectionString"));
+            //    cfg.TokenValidationParameters = new TokenValidationParameters()
+            //    {
+            //        ValidIssuer = _config["Tokens:Issuer"],
+            //        ValidAudience = _config["Tokens:Audience"],
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]))
+            //    };
+
             //});
-            //services.AddAutoMapper();
-            //services.AddTransient<DutchSeeder>();
-            //services.AddScoped<IDutchRepository, DutchRepository>();
 
             services.AddMvc(opt =>
             {
