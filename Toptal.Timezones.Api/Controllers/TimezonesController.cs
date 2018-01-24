@@ -4,18 +4,34 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Toptal.Timezones.Entities;
+using Toptal.Timezones.Repository;
 
 namespace Toptal.Timezones.Api.Controllers
 {
     [Route("api/[controller]")]
     [Authorize(Roles = "Admin")]
-    public class UserManagementController : Controller
+    public class TimezonesController : Controller
     {
-        // GET api/users
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly ILogger<TimezonesController> _logger;
+        private readonly IConfiguration _config;
+        private readonly ITimezonesRepository _repository;
+
+        public TimezonesController(ILogger<TimezonesController> logger,
+          IConfiguration config,
+          ITimezonesRepository repository)
         {
-            return new string[] { "value1", "value2" };
+            this._logger = logger;
+            this._config = config;
+            this._repository = repository;
+        }
+
+        [HttpGet]
+        public ActionResult Get()
+        {
+            return Ok(_repository.GetAllTimezones());
         }
 
         // GET api/users/5

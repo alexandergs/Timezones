@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Toptal.Timezones.Entities;
+using Toptal.Timezones.Repository;
 
 namespace Toptal.Timezones.Api
 {
@@ -77,6 +78,8 @@ namespace Toptal.Timezones.Api
                 }
             })
             .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+
+            services.AddScoped<ITimezonesRepository, TimezonesRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
