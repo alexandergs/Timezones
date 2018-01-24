@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Toptal.Timezones.Api", "Top
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Toptal.Timezones", "Toptal.Timezones\Toptal.Timezones.csproj", "{E42D0096-D096-4382-BFEB-DCFE1FF609BE}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TimeZonesDB", "TimeZonesDB\TimeZonesDB.sqlproj", "{A666C3B1-3AE3-4532-BA22-2920981C988C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,12 @@ Global
 		{E42D0096-D096-4382-BFEB-DCFE1FF609BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E42D0096-D096-4382-BFEB-DCFE1FF609BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E42D0096-D096-4382-BFEB-DCFE1FF609BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A666C3B1-3AE3-4532-BA22-2920981C988C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A666C3B1-3AE3-4532-BA22-2920981C988C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A666C3B1-3AE3-4532-BA22-2920981C988C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A666C3B1-3AE3-4532-BA22-2920981C988C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A666C3B1-3AE3-4532-BA22-2920981C988C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A666C3B1-3AE3-4532-BA22-2920981C988C}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

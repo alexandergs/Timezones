@@ -1,0 +1,5 @@
+﻿CREATE TABLE [dbo].[User] (
+    [Email] NVARCHAR (100) NOT NULL,
+    CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED ([Email] ASC)
+);
+
