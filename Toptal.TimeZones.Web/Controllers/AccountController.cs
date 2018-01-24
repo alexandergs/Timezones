@@ -1,15 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Toptal.Timezones.Entities.Identity;
+using Toptal.Timezones.Web.Session;
+using Toptal.Timezones.Web.Models;
 using Toptal.TimeZones.Services;
-using Toptal.TimeZones.Web.ViewModels;
+using Toptal.Timezones.Web.Models;
 
 namespace Toptal.TimeZones.Web.Controllers
 {
@@ -18,24 +25,27 @@ namespace Toptal.TimeZones.Web.Controllers
         private readonly ILogger<AccountController> _logger;
         private readonly SignInManager<AppIdentityUser> _signInManager;
         private readonly UserManager<AppIdentityUser> _userManager;
+        private readonly RoleManager<AppIdentityRole> _roleManager;
         private readonly IConfiguration _config;
         private readonly IEmailSender _emailSender;
-
-
+        private SessionContext _sessionContext;
 
         public AccountController(ILogger<AccountController> logger,
           SignInManager<AppIdentityUser> signInManager,
           UserManager<AppIdentityUser> userManager,
+          RoleManager<AppIdentityRole> roleManager,
           IConfiguration config,
           IEmailSender emailSender)
         {
             _logger = logger;
             _signInManager = signInManager;
             _userManager = userManager;
+            _roleManager = roleManager;
             _config = config;
             _emailSender = emailSender;
         }
 
+        [HttpGet]
         public IActionResult Login()
         {
             if (this.User.Identity.IsAuthenticated)
@@ -49,15 +59,18 @@ namespace Toptal.TimeZones.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
+            _sessionContext = new SessionContext(this.HttpContext);
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Username,
+                var result = await _signInManager.PasswordSignInAsync(model.UserName,
                   model.Password,
                   model.RememberMe,
                   false);
 
                 if (result.Succeeded)
                 {
+                    await SetBearerTokem(model);
+
                     if (Request.Query.Keys.Contains("ReturnUrl"))
                     {
                         return Redirect(Request.Query["ReturnUrl"].First());
@@ -72,6 +85,12 @@ namespace Toptal.TimeZones.Web.Controllers
             ModelState.AddModelError("", "Failed to login");
 
             return View();
+        }
+
+        private async Task SetBearerTokem(LoginViewModel model)
+        {
+            var tokenInfo = await CreateTokenAsync(model);
+            _sessionContext.SessionTokenInfo = tokenInfo;
         }
 
         [HttpGet]
@@ -120,6 +139,22 @@ namespace Toptal.TimeZones.Web.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetBearerToken()
+        {
+            _sessionContext = new SessionContext(this.HttpContext);
+            if (_sessionContext.SessionTokenInfo == null)
+            {
+                var currentUser = await _userManager.GetUserAsync(this.User);
+                await SetBearerTokem(new LoginViewModel
+                {
+                    UserName = currentUser.UserName,
+                    Password = currentUser.PasswordHash
+                });
+            }
+            return Ok(_sessionContext.SessionTokenInfo);
+        }
 
         [HttpGet]
         public async Task<IActionResult> Logout()
@@ -144,5 +179,103 @@ namespace Toptal.TimeZones.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        public async Task<BearerTokenInfo> CreateTokenAsync(LoginViewModel model)
+        {
+            var user = await _userManager.FindByNameAsync(model.UserName);
+
+            if (user != null)
+            {
+                var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+
+                if (result.Succeeded)
+                {
+                    // Create the token
+                    var claims = new[]
+                    {
+                          new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                          new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                          new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
+                        };
+
+                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
+                    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                    var token = new JwtSecurityToken(
+                      _config["Tokens:Issuer"],
+                      _config["Tokens:Audience"],
+                      claims,
+                      expires: DateTime.Now.AddMinutes(30),
+                      signingCredentials: creds);
+
+                    var results = new BearerTokenInfo
+                    {
+                        Token = new JwtSecurityTokenHandler().WriteToken(token),
+                        Expiration = token.ValidTo
+                    };
+
+                    return results;
+                }
+            }
+            return null;
+        }
+
+        [HttpGet]
+        //[Authorize(Roles ="Admin")]
+        [Authorize]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+                var users = _userManager.Users.OrderBy(user => user.Email);
+                var result = users.Select(user => new AppUserInfoViewModel
+                {
+                    Email = user.Email,
+                    UserName = user.UserName
+                }).ToList();
+
+                foreach (var user in users)
+                {
+                    var currentUser = result.First(u => u.Email == user.Email);
+                    currentUser.Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+                }
+
+                return Ok(result);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError($"Error while retrieving users. {exception}");
+            }
+
+            return StatusCode(500);
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateUserRole(string id, [FromBody]AppUserInfoViewModel userInfo)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var currentUser = await _userManager.FindByNameAsync(userInfo.Email);
+                    var roles = await _userManager.GetRolesAsync(currentUser);
+                    await _userManager.RemoveFromRolesAsync(currentUser, roles.ToArray());
+                    if(!String.IsNullOrWhiteSpace(userInfo.Role))
+                        await _userManager.AddToRoleAsync(currentUser, userInfo.Role);
+
+                    return Ok(userInfo);
+                }
+                else
+                {
+                    return BadRequest(ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to save user role: {ex}");
+            }
+
+            return BadRequest("Failed to save user role");
+        }
     }
 }

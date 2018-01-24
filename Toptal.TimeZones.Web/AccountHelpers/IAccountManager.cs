@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Toptal.Timezones.AccountManagement
+namespace Toptal.Timezones.Web.AccountHelpers
 {
     public interface IAccountManager
     {

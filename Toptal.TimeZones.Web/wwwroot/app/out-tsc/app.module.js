@@ -10,15 +10,20 @@ var platform_browser_1 = require("@angular/platform-browser");
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
 var app_component_1 = require("./app.component");
+var userManagement_component_1 = require("./userManagement/userManagement.component");
 //import { ProductList } from "./shop/productList.component";
 //import { Cart } from "./shop/cart.component";
 //import { Shop } from "./shop/shop.component";
 //import { Checkout } from "./checkout/checkout.component";
-//import { Login } from "./login/login.component";
-//import { DataService } from "./shared/dataService"
+var login_component_1 = require("./login/login.component");
+var dataService_1 = require("./shared/dataService");
+var authenticationService_1 = require("./shared/authenticationService");
 var router_1 = require("@angular/router");
 var forms_1 = require("@angular/forms");
-var routes = [];
+var routes = [
+    { path: "userManagement", component: userManagement_component_1.UserManagement, data: { title: "User Management" } },
+    { path: "", component: login_component_1.Login },
+];
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -26,6 +31,12 @@ var AppModule = /** @class */ (function () {
         core_1.NgModule({
             declarations: [
                 app_component_1.AppComponent,
+                userManagement_component_1.UserManagement,
+                //ProductList,
+                //Cart,
+                //Shop,
+                //Checkout,
+                login_component_1.Login
             ],
             imports: [
                 platform_browser_1.BrowserModule,
@@ -36,7 +47,10 @@ var AppModule = /** @class */ (function () {
                     enableTracing: false // for Debugging of the Routes
                 })
             ],
-            providers: [],
+            providers: [
+                dataService_1.DataService,
+                authenticationService_1.AuthenticationService
+            ],
             bootstrap: [app_component_1.AppComponent]
         })
     ], AppModule);

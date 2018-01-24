@@ -2,10 +2,9 @@
 import { Http, Response, Headers } from "@angular/http";
 import { Observable } from "rxjs";
 import 'rxjs/add/operator/map';
-import { UserInfoViewModel } from "./userInfoViewModel"
 
 @Injectable()
-export class DataService {
+export class AuthenticationService {
 
     constructor(private http: Http) {
 
@@ -16,34 +15,27 @@ export class DataService {
 
     //public order: Order = new Order();
 
-    public allUsers: UserInfoViewModel[] = [];
+    //public products: Product[] = [];
 
-    public loadAllUsersInfo(): Observable<UserInfoViewModel[]> {
-        return this.http.get("/account/getallusers")
-            .map((result: Response) => this.allUsers = result.json());
-    }
-
-    public updateUserRole(userInfo: UserInfoViewModel) {
-        return this.http.put("/account/updateUserRole?id="+userInfo.email,userInfo,
-            {
-                headers: new Headers({ "Authorization": "Bearer " + this.token })
-            }
-            );
-    }
-
-    //public get loginRequired(): boolean {
-    //  return this.token.length == 0 || this.tokenExpiration > new Date();
+    //public loadProducts(): Observable<Product[]> {
+    //  return this.http.get("/api/users")
+    //    .map((result: Response) => this.products = result.json());
     //}
 
-    //public login(creds) {
-    //  return this.http.post("/authentication/createtoken", creds)
-    //    .map(response => {
-    //      let tokenInfo = response.json();
-    //      this.token = tokenInfo.token;
-    //      this.tokenExpiration = tokenInfo.expiration;
-    //      return true;
-    //    });
-    //}
+    public get tokenRequired(): boolean {
+        return this.token.length == 0 || this.tokenExpiration > new Date();
+    }
+
+    public loadBearerToken() {
+        return this.http.get("/account/getbearertoken")
+            .subscribe(data => {
+                let tokenInfo = data.json()
+                this.token = tokenInfo.token;
+                this.tokenExpiration = tokenInfo.expiration;
+            });
+    }
+
+                
 
     //public checkout() {
     //  if (!this.order.orderNumber) {

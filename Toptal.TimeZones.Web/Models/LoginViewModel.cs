@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Toptal.TimeZones.Web.ViewModels
+namespace Toptal.Timezones.Web.Models
 {
     public class LoginViewModel
     {
         [Required]
-        public string Username { get; set; }
+        public string UserName { get; set; }
         [Required]
         public string Password { get; set; }
         public bool RememberMe { get; set; }

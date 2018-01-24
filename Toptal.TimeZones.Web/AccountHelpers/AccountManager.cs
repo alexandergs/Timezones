@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Toptal.Timezones.Entities.Identity;
 
-namespace Toptal.Timezones.AccountManagement
+namespace Toptal.Timezones.Web.AccountHelpers
 {
     public class AccountManager : IAccountManager
     {
@@ -84,7 +84,10 @@ namespace Toptal.Timezones.AccountManagement
 
                     }
                 }
-
+                else
+                {
+                    await _userManager.AddToRoleAsync(_user, DEFAULT_ADMIN_ROLE_NAME);
+                }
             }
             catch (Exception exception)
             {

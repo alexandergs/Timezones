@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Toptal.Timezones.AccountManagement;
+using Toptal.Timezones.Web.AccountHelpers;
 using Toptal.Timezones.Entities;
 using Toptal.Timezones.Entities.Identity;
 using Toptal.TimeZones.Services;
@@ -63,6 +63,9 @@ namespace Toptal.TimeZones.Web
 
             services.AddTransient<IAccountManager, AccountManager>();
 
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,6 +83,7 @@ namespace Toptal.TimeZones.Web
 
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

@@ -23,18 +23,16 @@ var Login = /** @class */ (function () {
         };
     }
     Login.prototype.onLogin = function () {
-        var _this = this;
-        this.data.login(this.creds)
-            .subscribe(function (success) {
-            if (success) {
-                if (_this.data.order.items.length == 0) {
-                    _this.router.navigate([""]);
-                }
-                else {
-                    _this.router.navigate(["checkout"]);
-                }
-            }
-        }, function (err) { return _this.errorMessage = "Failed to login"; });
+        //this.data.login(this.creds)
+        //  .subscribe(success => {
+        //    if (success) {
+        //      if (this.data.order.items.length == 0) {
+        //        this.router.navigate([""]);
+        //      } else {
+        //        this.router.navigate(["checkout"]);
+        //      }
+        //    }
+        //  }, err => this.errorMessage = "Failed to login");
     };
     Login = __decorate([
         core_1.Component({
