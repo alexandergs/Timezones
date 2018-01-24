@@ -31,7 +31,15 @@ namespace Toptal.Timezones.Api.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok(_repository.GetAllTimezones());
+            try
+            {
+                return Ok(_repository.GetAllTimezones());
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError($"Error while getting the timezones. {exception}");
+            }
+            return BadRequest("Error while getting the timezones.");
         }
 
         // GET api/users/5

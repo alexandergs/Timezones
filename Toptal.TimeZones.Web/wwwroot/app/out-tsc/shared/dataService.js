@@ -29,6 +29,11 @@ var DataService = /** @class */ (function () {
             headers: new http_1.Headers({ "Authorization": "Bearer " + this.token })
         });
     };
+    DataService.prototype.registerUser = function (userInfo) {
+        return this.http.post("/account/registerUserWithRole", userInfo, {
+            headers: new http_1.Headers({ "Authorization": "Bearer " + this.token })
+        });
+    };
     DataService.prototype.deleteUser = function (userInfo) {
         return this.http.delete("/account/deleteUser/" + userInfo.email, {
             headers: new http_1.Headers({ "Authorization": "Bearer " + this.token })

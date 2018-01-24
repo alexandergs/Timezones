@@ -20,7 +20,7 @@ webpackEmptyAsyncContext.id = "../../../../../app/$$_gendir lazy recursive";
 /***/ "../../../../../app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<router-outlet></router-outlet>"
+module.exports = "<router-outlet></router-outlet>\r\n"
 
 /***/ }),
 
@@ -84,18 +84,13 @@ var core_1 = __webpack_require__("../../../core/@angular/core.es5.js");
 var http_1 = __webpack_require__("../../../http/@angular/http.es5.js");
 var app_component_1 = __webpack_require__("../../../../../app/app.component.ts");
 var userManagement_component_1 = __webpack_require__("../../../../../app/userManagement/userManagement.component.ts");
-//import { ProductList } from "./shop/productList.component";
-//import { Cart } from "./shop/cart.component";
-//import { Shop } from "./shop/shop.component";
-//import { Checkout } from "./checkout/checkout.component";
-var login_component_1 = __webpack_require__("../../../../../app/login/login.component.ts");
 var dataService_1 = __webpack_require__("../../../../../app/shared/dataService.ts");
 var authenticationService_1 = __webpack_require__("../../../../../app/shared/authenticationService.ts");
 var router_1 = __webpack_require__("../../../router/@angular/router.es5.js");
 var forms_1 = __webpack_require__("../../../forms/@angular/forms.es5.js");
 var routes = [
+    { path: "", component: userManagement_component_1.UserManagement, data: { title: "User Management" } },
     { path: "userManagement", component: userManagement_component_1.UserManagement, data: { title: "User Management" } },
-    { path: "", component: login_component_1.Login },
 ];
 var AppModule = (function () {
     function AppModule() {
@@ -106,12 +101,7 @@ AppModule = __decorate([
     core_1.NgModule({
         declarations: [
             app_component_1.AppComponent,
-            userManagement_component_1.UserManagement,
-            //ProductList,
-            //Cart,
-            //Shop,
-            //Checkout,
-            login_component_1.Login
+            userManagement_component_1.UserManagement
         ],
         imports: [
             platform_browser_1.BrowserModule,
@@ -148,68 +138,6 @@ exports.environment = {
     production: false
 };
 //# sourceMappingURL=environment.js.map
-
-/***/ }),
-
-/***/ "../../../../../app/login/login.component.html":
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"row\">\r\nLOGIN FORM\r\n</div>"
-
-/***/ }),
-
-/***/ "../../../../../app/login/login.component.ts":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = __webpack_require__("../../../core/@angular/core.es5.js");
-var dataService_1 = __webpack_require__("../../../../../app/shared/dataService.ts");
-var router_1 = __webpack_require__("../../../router/@angular/router.es5.js");
-var Login = (function () {
-    function Login(data, router) {
-        this.data = data;
-        this.router = router;
-        this.errorMessage = "";
-        this.creds = {
-            username: "",
-            password: ""
-        };
-    }
-    Login.prototype.onLogin = function () {
-        //this.data.login(this.creds)
-        //  .subscribe(success => {
-        //    if (success) {
-        //      if (this.data.order.items.length == 0) {
-        //        this.router.navigate([""]);
-        //      } else {
-        //        this.router.navigate(["checkout"]);
-        //      }
-        //    }
-        //  }, err => this.errorMessage = "Failed to login");
-    };
-    return Login;
-}());
-Login = __decorate([
-    core_1.Component({
-        selector: "login",
-        template: __webpack_require__("../../../../../app/login/login.component.html")
-    }),
-    __metadata("design:paramtypes", [typeof (_a = typeof dataService_1.DataService !== "undefined" && dataService_1.DataService) === "function" && _a || Object, typeof (_b = typeof router_1.Router !== "undefined" && router_1.Router) === "function" && _b || Object])
-], Login);
-exports.Login = Login;
-var _a, _b;
-//# sourceMappingURL=login.component.js.map
 
 /***/ }),
 
@@ -323,6 +251,11 @@ var DataService = (function () {
             headers: new http_1.Headers({ "Authorization": "Bearer " + this.token })
         });
     };
+    DataService.prototype.registerUser = function (userInfo) {
+        return this.http.post("/account/registerUserWithRole", userInfo, {
+            headers: new http_1.Headers({ "Authorization": "Bearer " + this.token })
+        });
+    };
     DataService.prototype.deleteUser = function (userInfo) {
         return this.http.delete("/account/deleteUser/" + userInfo.email, {
             headers: new http_1.Headers({ "Authorization": "Bearer " + this.token })
@@ -348,7 +281,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "", ""]);
+exports.push([module.i, "button {\n    margin: 5px 5px 5px 5px;\n}\n", ""]);
 
 // exports
 
@@ -361,7 +294,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../app/userManagement/userManagement.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"row\">\r\n    <h3>\r\n        {{title}}\r\n    </h3>\r\n    <div class=\"container\">\r\n        <div class=\"col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3  col-sm-8 col-sm-offset-2 col-xs-12\">\r\n            <div *ngIf=\"errorMessage\" class=\"alert alert-warning\">{{ errorMessage }}</div>\r\n            <div *ngIf=\"successMessage\" class=\"alert alert-success\">{{ successMessage }}</div>\r\n            <table class=\"table table-bordered table-hover\">\r\n                <thead class=\"thead thead-inverse\">\r\n                    <tr>\r\n                        <th>User</th>\r\n                        <th>Role</th>\r\n                        <th></th>\r\n                    </tr>\r\n                </thead>\r\n                <tbody>\r\n                    <tr *ngFor=\"let userInfo of allUsers\">\r\n                        <td>{{ userInfo.email }}</td>\r\n                        <td>\r\n                            <select [(ngModel)]=\"userInfo.role\" (change)=\"onChangeRoleSelect($event, userInfo)\">\r\n                                <option value=\"\" [selected]=\"userInfo.role == ''\">Member</option>\r\n                                <option value=\"Admin\" [selected]=\"userInfo.role == 'Admin'\">Admin</option>\r\n                                <option value=\"Manager\" [selected]=\"userInfo.role == 'Manager'\">Manager</option>\r\n                            </select>\r\n                        </td>\r\n                        <td>\r\n                            <button class=\"btn btn-danger\" (click)=\"onDelete($event, userInfo)\">Delete</button>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        </div>\r\n    </div>\r\n</div>"
+module.exports = "<timezones-app></timezones-app>\r\n<div class=\"row\">\r\n    <h3>\r\n        {{title}}\r\n    </h3>\r\n    <div class=\"container\">\r\n        <div *ngIf=\"errorMessage\" class=\"alert alert-warning\">{{ errorMessage }}</div>\r\n        <div *ngIf=\"successMessage\" class=\"alert alert-success\">{{ successMessage }}</div>\r\n        <div *ngIf=\"!showAddUser\" class=\"col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3  col-sm-8 col-sm-offset-2 col-xs-12\">\r\n            <button type=\"button\" class=\"btn btn-success pull-right\" (click)=\"onAddUser()\"><i class=\"fa fa-plus\"></i> Create User</button>\r\n            <table class=\"table table-bordered table-hover\">\r\n                <thead class=\"thead thead-inverse\">\r\n                    <tr>\r\n                        <th>User</th>\r\n                        <th>Role</th>\r\n                        <th></th>\r\n                    </tr>\r\n                </thead>\r\n                <tbody>\r\n                    <tr *ngFor=\"let userInfo of allUsers\">\r\n                        <td>{{ userInfo.email }}</td>\r\n                        <td>\r\n                            <select [(ngModel)]=\"userInfo.role\" (change)=\"onChangeRoleSelect($event, userInfo)\">\r\n                                <option value=\"\" [selected]=\"userInfo.role == ''\">Member</option>\r\n                                <option value=\"Admin\" [selected]=\"userInfo.role == 'Admin'\">Admin</option>\r\n                                <option value=\"Manager\" [selected]=\"userInfo.role == 'Manager'\">Manager</option>\r\n                            </select>\r\n                        </td>\r\n                        <td>\r\n                            <button class=\"btn btn-danger\" (click)=\"onDelete($event, userInfo)\">Delete</button>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        </div>\r\n        <div *ngIf=\"showAddUser\" class=\"col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3  col-sm-8 col-sm-offset-2 col-xs-12\">\r\n            <div class=\"row\">\r\n                <button type=\"button\" class=\"btn btn-primary-outline pull-right \" (click)=\"onGoBack()\"><i class=\"fa fa-backward\"></i> Cancel</button>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"col-md-4 col-md-offset-4\">\r\n                    <div class=\"form-group\">\r\n                        <div>Email</div>\r\n                        <input class=\"form-control\" [(ngModel)]=\"newUser.email\" />\r\n                        <span class=\"text-warning\"></span>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <div>Password</div>\r\n                        <input type=\"password\" class=\"form-control\" [(ngModel)]=\"newUser.password\" />\r\n                        <span class=\"text-warning\"></span>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <div>ConfirmPassword</div>\r\n                        <input type=\"password\" class=\"form-control\" [(ngModel)]=\"newUser.passwordConfirm\" />\r\n                        <span class=\"text-warning\"></span>\r\n                    </div>\r\n\r\n                    <div class=\"form-group\">\r\n                        <div>Role</div>\r\n                        <select [(ngModel)]=\"newUser.role\">\r\n                            <option value=\"\" selected>Member</option>\r\n                            <option value=\"Admin\">Admin</option>\r\n                            <option value=\"Manager\">Manager</option>\r\n                        </select>\r\n                    </div>\r\n\r\n                    <div class=\"form-group\">\r\n                        <button class=\"btn btn-success\" (click)=\"onSaveUser($event, newUser)\">Save</button>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -388,6 +321,13 @@ var UserManagement = (function () {
         this.title = "User Management";
         this.errorMessage = "";
         this.successMessage = "";
+        this.showAddUser = false;
+        this.newUser = {
+            email: "",
+            password: "",
+            passwordConfirm: "",
+            role: ""
+        };
         this.allUsers = this.data.allUsers;
     }
     UserManagement.prototype.removeUserFromList = function (email) {
@@ -410,6 +350,50 @@ var UserManagement = (function () {
             _this.errorMessage = "";
             _this.successMessage = "User deleted.";
         }, function (err) { return _this.errorMessage = "Failed to delete user."; });
+        return true;
+    };
+    UserManagement.prototype.onAddUser = function () {
+        this.showAddUser = true;
+        return true;
+    };
+    ;
+    UserManagement.prototype.onGoBack = function () {
+        //remember to clear the new fields
+        this.showAddUser = false;
+    };
+    UserManagement.prototype.onSaveUser = function ($event, newUser) {
+        var _this = this;
+        if (newUser.password != newUser.passwordConfirm)
+            this.errorMessage = "Password entries dont match";
+        var userInfo = {
+            userName: newUser.email,
+            email: newUser.email,
+            password: newUser.password,
+            confirmPassword: newUser.passwordConfirm,
+            role: newUser.role
+        };
+        this.data.registerUser(userInfo)
+            .subscribe(function () {
+            _this.errorMessage = "";
+            _this.successMessage = "User Created.";
+            _this.allUsers.push({
+                userName: newUser.email,
+                email: newUser.email,
+                role: newUser.role,
+                password: "",
+                confirmPassword: ""
+            });
+            _this.newUser = {
+                email: "",
+                role: "",
+                password: "",
+                passwordConfirm: ""
+            };
+            _this.showAddUser = false;
+        }, function (err) {
+            _this.errorMessage = "Failed while creating the user. User might already exist.";
+            _this.successMessage = "";
+        });
         return true;
     };
     UserManagement.prototype.ngOnInit = function () {

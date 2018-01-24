@@ -17,6 +17,13 @@ var UserManagement = /** @class */ (function () {
         this.title = "User Management";
         this.errorMessage = "";
         this.successMessage = "";
+        this.showAddUser = false;
+        this.newUser = {
+            email: "",
+            password: "",
+            passwordConfirm: "",
+            role: ""
+        };
         this.allUsers = this.data.allUsers;
     }
     UserManagement.prototype.removeUserFromList = function (email) {
@@ -39,6 +46,36 @@ var UserManagement = /** @class */ (function () {
             _this.errorMessage = "";
             _this.successMessage = "User deleted.";
         }, function (err) { return _this.errorMessage = "Failed to delete user."; });
+        return true;
+    };
+    UserManagement.prototype.onAddUser = function () {
+        this.showAddUser = true;
+        return true;
+    };
+    ;
+    UserManagement.prototype.onGoBack = function () {
+        //remember to clear the new fields
+        this.showAddUser = false;
+    };
+    UserManagement.prototype.onSaveUser = function ($event, newUser) {
+        var _this = this;
+        if (newUser.password != newUser.passwordConfirm)
+            this.errorMessage = "Password entries dont match";
+        var userInfo = {
+            userName: newUser.email,
+            email: newUser.email,
+            password: newUser.password,
+            confirmPassword: newUser.passwordConfirm,
+            role: newUser.role
+        };
+        this.data.registerUser(userInfo)
+            .subscribe(function () {
+            _this.errorMessage = "";
+            _this.successMessage = "User Created.";
+        }, function (err) {
+            _this.errorMessage = "Failed while creating the user. User might already exist.";
+            _this.successMessage = "";
+        });
         return true;
     };
     UserManagement.prototype.ngOnInit = function () {

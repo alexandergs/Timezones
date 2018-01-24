@@ -67,4 +67,7 @@
     <Build Include="dbo\Tables\UserTimeZone.sql" />
     <Build Include="dbo\Tables\UserTimeZoneAudit.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="TimeZonesDB.publish.xml" />
+  </ItemGroup>
 </Project>

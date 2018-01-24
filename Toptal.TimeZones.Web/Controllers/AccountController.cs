@@ -88,17 +88,46 @@ namespace Toptal.TimeZones.Web.Controllers
             return View();
         }
 
-        private async Task SetBearerTokem(LoginViewModel model)
-        {
-            var tokenInfo = await CreateTokenAsync(model);
-            _sessionContext.SessionTokenInfo = tokenInfo;
-        }
-
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> RegisterUserWithRole([FromBody]RegisterUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var result = await RegisterUser(model);
+                    if (result.Succeeded)
+                    {
+                        result = await this.UpdateRole(new AppUserInfoViewModel
+                        {
+                            Email = model.Email,
+                            Role = model.Role,
+                            UserName = model.Email
+                        });
+                        if (result.Succeeded)
+                            return Ok(model);
+                    }
+
+                    foreach (IdentityError error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    _logger.LogError("Error while registering user with role. {exception}");
+                }
+
+            }
+            return BadRequest("Errors creating user. ");
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -107,6 +136,20 @@ namespace Toptal.TimeZones.Web.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            var result = await RegisterUser(model);
+
+            if (result.Succeeded)
+                return RedirectToAction("Index", "Home");
+
+            foreach (IdentityError error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+            return View(model);
+        }
+
+        private async Task<IdentityResult> RegisterUser(RegisterUserViewModel model)
+        {
             var user = new AppIdentityUser
             {
                 UserName = model.Email,
@@ -129,15 +172,8 @@ namespace Toptal.TimeZones.Web.Controllers
                     email: user.Email,
                     subject: "Confirm Email",
                     message: callbackurl);
-
-                return RedirectToAction("Index", "Home");
             }
-
-            foreach (IdentityError error in result.Errors)
-            {
-                ModelState.AddModelError("", error.Description);
-            }
-            return View(model);
+            return result;
         }
 
         [HttpGet]
@@ -261,13 +297,9 @@ namespace Toptal.TimeZones.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var currentUser = await _userManager.FindByNameAsync(userInfo.Email);
-                    var roles = await _userManager.GetRolesAsync(currentUser);
-                    await _userManager.RemoveFromRolesAsync(currentUser, roles.ToArray());
-                    if (!String.IsNullOrWhiteSpace(userInfo.Role))
-                        await _userManager.AddToRoleAsync(currentUser, userInfo.Role);
-
-                    return Ok(userInfo);
+                    var updateRoleResult = await UpdateRole(userInfo);
+                    if(updateRoleResult.Succeeded)
+                        return Ok(userInfo);
                 }
                 else
                 {
@@ -282,8 +314,21 @@ namespace Toptal.TimeZones.Web.Controllers
             return BadRequest("Failed to save user role");
         }
 
+        private async Task<IdentityResult> UpdateRole(AppUserInfoViewModel userInfo)
+        {
+            var currentUser = await _userManager.FindByNameAsync(userInfo.Email);
+            var roles = await _userManager.GetRolesAsync(currentUser);
+            var resultRemoveRoles = await _userManager.RemoveFromRolesAsync(currentUser, roles.ToArray());
+            IdentityResult resultAddRole = null;
+            if (!String.IsNullOrWhiteSpace(userInfo.Role))
+                resultAddRole = await _userManager.AddToRoleAsync(currentUser, userInfo.Role);
+            if (resultRemoveRoles.Succeeded && (resultAddRole == null || resultAddRole.Succeeded))
+                return resultRemoveRoles;
+            return resultAddRole.Succeeded ? resultRemoveRoles : resultAddRole;
+        }
+
         [HttpDelete]
-        [Authorize(Roles = RoleNames.Admin)]
+        [Authorize(Roles = RoleNames.Admin + "," + RoleNames.Manager)]
         public async Task<IActionResult> DeleteUser(string id)
         {
             try
@@ -308,6 +353,12 @@ namespace Toptal.TimeZones.Web.Controllers
             }
 
             return BadRequest("Failed to delete user");
+        }
+
+        private async Task SetBearerTokem(LoginViewModel model)
+        {
+            var tokenInfo = await CreateTokenAsync(model);
+            _sessionContext.SessionTokenInfo = tokenInfo;
         }
     }
 }

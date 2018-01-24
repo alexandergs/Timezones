@@ -31,6 +31,14 @@ export class DataService {
         );
     }
 
+    public registerUser(userInfo: UserInfoViewModel) {
+        return this.http.post("/account/registerUserWithRole", userInfo,
+            {
+                headers: new Headers({ "Authorization": "Bearer " + this.token })
+            }
+        );
+    }
+
     public deleteUser(userInfo: UserInfoViewModel) {
         return this.http.delete("/account/deleteUser/" + userInfo.email,
             {

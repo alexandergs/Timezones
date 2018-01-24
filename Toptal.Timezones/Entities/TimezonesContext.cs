@@ -42,6 +42,8 @@ namespace Toptal.Timezones.Entities
 
                 entity.Property(e => e.TimeZoneName).HasMaxLength(100);
 
+                entity.Property(e => e.CityName).HasMaxLength(100);
+
                 entity.HasOne(d => d.UserEmailNavigation)
                     .WithMany(p => p.UserTimeZone)
                     .HasForeignKey(d => d.UserEmail)

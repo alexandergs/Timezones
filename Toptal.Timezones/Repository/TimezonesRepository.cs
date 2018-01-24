@@ -23,5 +23,28 @@ namespace Toptal.Timezones.Repository
         {
             return _context.UserTimeZone.OrderBy(utz => utz.UserEmail).ToList();
         }
+
+        public IList<UserTimeZone> GetTimezonesByUser(string email)
+        {
+            return _context.UserTimeZone.Where(tz => tz.UserEmail == email).OrderBy(utz => utz.CityName).ToList();
+        }
+
+        public void UpdateTimezone(UserTimeZone userTimeZone)
+        {
+            _context.Attach(userTimeZone);
+        }
+
+        public void AddTimeZone(UserTimeZone userTimeZone)
+        {
+            if(_context.User.FirstOrDefault(tz => tz.Email == userTimeZone.UserEmail) == null)
+                _context.User.Add(new User { Email = userTimeZone.UserEmail });
+            _context.Add(userTimeZone);
+        }
+
+        public bool SaveAll()
+        {
+            return _context.SaveChanges() > 0;
+        }
+
     }
 }
