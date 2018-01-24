@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Toptal.Timezones.Entities.Identity
+namespace Toptal.Timezones.Web.Models.Identity
 {
     public class AppIdentityRole : IdentityRole
     {

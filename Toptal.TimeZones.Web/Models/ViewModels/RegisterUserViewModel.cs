@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Toptal.Timezones.Web.Models
+namespace Toptal.Timezones.Web.Models.ViewModels
 {
     public class RegisterUserViewModel
     {

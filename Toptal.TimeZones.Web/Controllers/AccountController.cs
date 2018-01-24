@@ -12,11 +12,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Toptal.Timezones.Entities.Identity;
+using Toptal.Timezones.Web.Models.Identity;
 using Toptal.Timezones.Web.Session;
 using Toptal.Timezones.Web.Models;
+using Toptal.Timezones.Web.Models.ViewModels;
 using Toptal.TimeZones.Services;
-using Toptal.Timezones.Web.Models;
 using Toptal.Timezones.Web.AccountHelpers;
 
 namespace Toptal.TimeZones.Web.Controllers

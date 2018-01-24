@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Toptal.Timezones.Entities.Identity;
+using Toptal.Timezones.Web.Models.Identity;
 
 namespace Toptal.Timezones.Web.AccountHelpers
 {

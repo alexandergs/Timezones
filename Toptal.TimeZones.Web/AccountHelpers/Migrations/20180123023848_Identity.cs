@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
 
-namespace Toptal.Timezones.Migrations
+namespace Toptal.Timezones.Web.AccountHelpers.Migrations
 {
     public partial class Identity : Migration
     {

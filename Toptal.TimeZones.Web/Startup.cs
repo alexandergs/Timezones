@@ -11,8 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Toptal.Timezones.Web.AccountHelpers;
-using Toptal.Timezones.Entities;
-using Toptal.Timezones.Entities.Identity;
+using Toptal.Timezones.Web.Models.Identity;
+
 using Toptal.TimeZones.Services;
 
 namespace Toptal.TimeZones.Web

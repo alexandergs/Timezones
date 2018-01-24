@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
-using Toptal.Timezones.Entities;
+using Toptal.Timezones.Web.Models.Identity;
 
-namespace Toptal.Timezones.Migrations
+namespace Toptal.Timezones.Web.AccountHelpers.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
     partial class AppIdentityDbContextModelSnapshot : ModelSnapshot

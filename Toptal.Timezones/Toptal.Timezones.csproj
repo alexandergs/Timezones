@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
+    <Folder Include="Entities\" />
     <Folder Include="Model\" />
     <Folder Include="Repository\" />
   </ItemGroup>

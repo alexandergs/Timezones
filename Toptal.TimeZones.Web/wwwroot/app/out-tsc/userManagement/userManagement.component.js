@@ -19,6 +19,9 @@ var UserManagement = /** @class */ (function () {
         this.successMessage = "";
         this.allUsers = this.data.allUsers;
     }
+    UserManagement.prototype.removeUserFromList = function (email) {
+        this.allUsers = this.allUsers.filter(function (item) { return item.email !== email; });
+    };
     UserManagement.prototype.onChangeRoleSelect = function ($event, userInfo) {
         var _this = this;
         this.data.updateUserRole(userInfo)
@@ -32,6 +35,7 @@ var UserManagement = /** @class */ (function () {
         var _this = this;
         this.data.deleteUser(userInfo)
             .subscribe(function () {
+            _this.removeUserFromList(userInfo.email);
             _this.errorMessage = "";
             _this.successMessage = "User deleted.";
         }, function (err) { return _this.errorMessage = "Failed to delete user."; });

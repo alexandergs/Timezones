@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Toptal.Timezones.Entities.Identity;
+using Toptal.Timezones.Web.Models.Identity;
 
-namespace Toptal.Timezones.Entities
+namespace Toptal.Timezones.Web.AccountHelpers
 {
     public class AppIdentityDbContext : IdentityDbContext<AppIdentityUser, AppIdentityRole, string>
     {
